@@ -1,0 +1,22 @@
+#fenDiv {
+  position: relative; 
+  left: 60px; 
+}
+
+#fenIn {
+  width: 480px; 
+  left: 60px; 
+}
+
+#board-wrap {
+  margin: 0 auto;
+}
+
+#board {
+  border: solid 1px black;
+  border-radius: 10px;
+}
+
+
+
+
