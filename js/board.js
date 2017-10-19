@@ -3,6 +3,7 @@ const GameBoard = {
   side: colors.white,
   fiftyMove: 0, 
   historyPly: 0,                    // index of all half-moves made 
+  history: [],
   ply: 0,                           // index of position in the tree of all moves 
   enPassant: 0,
   material: new Array(2),
@@ -11,27 +12,60 @@ const GameBoard = {
   positionKey: 0,
   moveList: new Array(maxDepth * maxPositionMoves),   // index for the first move at a given ply
   moveListStart: new Array(maxDepth), 
-  moveScores: new Array(maxDepth * maxPositionMoves),
-  /*
-  piece * 10 + pieceNum         
-
-  pieceNum[bP] = 4 
-
-  for (num=0 to 3) 
-    bP * 10 + num;     70,71,72,73
-    sq = pieceList[70]...
-  */         
-  castlePermission: 0 
-  /*
-  0001   white kingside
-  0010   white queenside
-  0100   black kingside
-  1000   black queenside
-
-  ex: if(1101 & castleBit.wK !== 0) then white can castle kingside
-  */
+  moveScores: new Array(maxDepth * maxPositionMoves),       
+  castlePermission: 0
 };
 
+function checkBoard() { // FOR DEBUGGING
+  const tPieceNum = [0,0,0,0,0,0,0,0,0,0,0,0,0]; 
+  const tMaterial = [0, 0]; 
+  let tSq64, tPiece, tPieceNumInd, tSq120, color, pCount; 
+
+  //Check Piece List
+  for(tPiece = pieces.wP; tPiece <= pieces.bK; tPiece++) {
+    for(tPieceNumInd = 0; tPieceNumInd < GameBoard.pieceNum[tPiece]; tPieceNumInd++) {
+      tSq120 = GameBoard.pieceList[pieceIndex(tPiece, tPieceNumInd)];
+      if (GameBoard.pieces[tSq120] !== tPiece) {
+        console.log('ERROR PIECE LISTS')
+        return false; 
+      }
+    }
+  }
+
+  // Populate Mirror Arrays of Material and PieceNum
+  for(tSq64=0; tSq64<64; tSq64++) {
+    tSq120 = sq120(tSq64); 
+    tPiece = GameBoard.pieces[tSq120]; 
+    tPieceNum[tPiece]++; 
+    tMaterial[pieceColor[tPiece]] += pieceValue[tPiece]; 
+  }
+
+  //Check Piece Num Counter
+  for(tPiece = pieces.wP; tPiece <= pieces.bK; tPiece++) {
+    if (tPieceNum[tPiece] !== GameBoard.pieceNum[tPiece]) {
+      console.log('ERROR tPieceNum'); 
+      return false; 
+    }
+  }
+
+  if (tMaterial[colors.white] !== GameBoard.material[colors.white] || 
+      tMaterial[colors.black] !== GameBoard.material[colors.black]) {
+        console.log('ERROR tMaterial'); 
+        return false; 
+  }
+
+  if (GameBoard.side !== colors.white && GameBoard.side !== colors.black) {
+    console.log('ERROR GameBoard.side'); 
+    return false; 
+  }
+
+  if (generatePositionKey() !== GameBoard.positionKey) {
+    console.log('ERROR GameBoard.positionKey: ', generatePositionKey(), GameBoard.positionKey);
+    return false; 
+  }
+
+  return true;
+};
 
 function printBoard () {
 
@@ -68,9 +102,9 @@ function printBoard () {
 
 function generatePositionKey() {
   let finalKey = 0; 
-
+  let piece = pieces.empty;
   for(let sq=0; sq < boardSquareNum; sq++) {
-    let piece = GameBoard.pieces[sq]; 
+    piece = GameBoard.pieces[sq]; 
     if(piece !== pieces.empty && piece !== squares.offBoard) {
       finalKey ^= pieceKeys[(piece * 120) + sq];
     }
@@ -305,21 +339,6 @@ function squareAttacked(sq, side) {
 
   return false;
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

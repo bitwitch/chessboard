@@ -12,6 +12,7 @@ function printMove(move) {
   let moveString = fileChar[ff] + rankChar[rf] + fileChar[ft] + rankChar[rt]; 
 
   const prom = promoted(move); 
+  console.log('promoted = ', prom);
 
   if (prom !== pieces.empty) {
     let pChar = 'q'; 
@@ -28,9 +29,11 @@ function printMove(move) {
 };
 
 function printMoveList() {
+  let num = 1; 
   console.log('\nMove List: ')
   for(let i = GameBoard.moveListStart[GameBoard.ply]; i < GameBoard.moveListStart[GameBoard.ply + 1]; i++) {
     const move = GameBoard.moveList[i];
-    console.log(printMove(move));
+    console.log('Move:', num, ':', printMove(move));
+    num++;
   }
 };

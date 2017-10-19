@@ -8,8 +8,8 @@
   0001 0000 0000 0000 0000 0000 0000 -> Castle, 0x1000000        (1bit )
 */
 
-function move(from, to, captured, promoted, flag) {
-  return (from | (to << 7) | (captured << 14) | (promoted << 20) | flag);
+function move(from, to, cap, promoted, flag) {
+  return (from | (to << 7) | (cap << 14) | (promoted << 20) | flag);
 }
 
 function addCaptureMove(move) {
@@ -27,25 +27,25 @@ function addEnPassantMove(move) {
   GameBoard.moveScores[GameBoard.moveListStart[GameBoard.ply+1]++] = 0;
 }
 
-function addWhitePawnCaptureMove(from, to, captured) {
+function addWhitePawnCaptureMove(from, to, cap) {
   if (ranksBoard[from] === ranks.rank7) {
-    addCaptureMove( move(from, to, captured, pieces.wQ, 0) ); // makeMove() will handle changing the pawn to its promoted piece
-    addCaptureMove( move(from, to, captured, pieces.wR, 0) );
-    addCaptureMove( move(from, to, captured, pieces.wB, 0) );
-    addCaptureMove( move(from, to, captured, pieces.wN, 0) );
+    addCaptureMove( move(from, to, cap, pieces.wQ, 0) ); // makeMove() will handle changing the pawn to its promoted piece
+    addCaptureMove( move(from, to, cap, pieces.wR, 0) );
+    addCaptureMove( move(from, to, cap, pieces.wB, 0) );
+    addCaptureMove( move(from, to, cap, pieces.wN, 0) );
   } else {
-    addCaptureMove( move(from, to, captured, pieces.empty, 0) );
+    addCaptureMove( move(from, to, cap, pieces.empty, 0) );
   }
 }
 
-function addBlackPawnCaptureMove(from, to, captured) {
+function addBlackPawnCaptureMove(from, to, cap) {
   if (ranksBoard[from] === ranks.rank2) {
-    addCaptureMove( move(from, to, captured, pieces.bQ, 0) ); // makeMove() will handle changing the pawn to its promoted piece
-    addCaptureMove( move(from, to, captured, pieces.bR, 0) );
-    addCaptureMove( move(from, to, captured, pieces.bB, 0) );
-    addCaptureMove( move(from, to, captured, pieces.bN, 0) );
+    addCaptureMove( move(from, to, cap, pieces.bQ, 0) ); // makeMove() will handle changing the pawn to its promoted piece
+    addCaptureMove( move(from, to, cap, pieces.bR, 0) );
+    addCaptureMove( move(from, to, cap, pieces.bB, 0) );
+    addCaptureMove( move(from, to, cap, pieces.bN, 0) );
   } else {
-    addCaptureMove( move(from, to, captured, pieces.empty, 0) );
+    addCaptureMove( move(from, to, cap, pieces.empty, 0) );
   }
 }
 
@@ -174,6 +174,7 @@ function generateMoves() {
         }
       }
     }
+
 
     // BLACK QUEEN SIDE CASTLE 
     if (GameBoard.castlePermission & castleBit.bQ) {

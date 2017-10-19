@@ -98,7 +98,34 @@ function pieceIndex(piece, pieceNum) {
   return piece * 10 + pieceNum; 
 };
 
-function fromSquare(move) { return (move & 0x7F); }
+const kings = [pieces.wK, pieces.bK];
+
+const castlePermission = [
+    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+    15, 13, 15, 15, 15, 12, 15, 15, 14, 15,
+    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+    15,  7, 15, 15, 15,  3, 15, 15, 11, 15,
+    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+    15, 15, 15, 15, 15, 15, 15, 15, 15, 15
+];
+
+/*
+  0000 0000 0000 0000 0000 0111 1111 -> From, 0x7f               (7bits)
+  0000 0000 0000 0011 1111 1000 0000 -> To >> 7, 0x7f            (7bits)
+  0000 0000 0011 1100 0000 0000 0000 -> Captured >> 14, 0xf      (4bits)
+  0000 0000 0100 0000 0000 0000 0000 -> EP 0x40000               (1bit )
+  0000 0000 1000 0000 0000 0000 0000 -> Pawn Start 0x80000       (1bit )
+  0000 1111 0000 0000 0000 0000 0000 -> Promoted pce >> 20, 0xf  (4bits)
+  0001 0000 0000 0000 0000 0000 0000 -> Castle, 0x1000000        (1bit )
+*/
+
+function fromSquare(move) { return (move & 0x7f); }
 function toSquare(move) { return ( (move >> 7) & 0x7f); }
 function captured(move) { return ( (move >> 14) & 0xf); }
 function promoted(move) { return ( (move >> 20) & 0xf); }
@@ -114,8 +141,21 @@ function squareOffBoard(sq) {
   return filesBoard[sq] === squares.offBoard ? true : false; 
 }
 
+function hashPiece(piece, sq) {
+  GameBoard.positionKey ^= pieceKeys[(piece * 120) + sq];
+}
 
+function hashCastle() {
+  GameBoard.positionKey ^= castleKeys[GameBoard.castlePermission];
+}
 
+function hashSide() {
+  GameBoard.positionKey ^= sideKey; 
+}
+
+function hashEP() {
+  GameBoard.positionKey ^= pieceKeys[GameBoard.enPassant]; 
+}
 
 
 

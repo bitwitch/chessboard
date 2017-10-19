@@ -1,4 +1,4 @@
-**************** ON VIDEO NUM 30 !!!!!!!!    **********
+**************** ON VIDEO NUM 34 !!!!!!!!    **********
 
 TOPIC: Checking all possible moves
 
@@ -67,6 +67,27 @@ ex. const piece1 = rand32();
 
 -----------------------------------------------------------------------
 
+TOPIC: GameBoard.moveScore && GameBoard.castlePermission 
+
+moveScore: 
+  piece * 10 + pieceNum         
+
+  pieceNum[bP] = 4 
+
+  for (num=0 to 3) 
+    bP * 10 + num;     70,71,72,73
+    sq = pieceList[70]...
+
+castlePermission: 
+  0001   white kingside
+  0010   white queenside
+  0100   black kingside
+  1000   black queenside
+
+  ex: if(1101 & castleBit.wK !== 0) then white can castle kingside
+
+-----------------------------------------------------------------------
+
 TOPIC: Fen notation 
 SUMMARY:
 rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
@@ -85,11 +106,7 @@ SUMMARY: Move info stored in bits as follows:
   0000 0000 1000 0000 0000 0000 0000 -> Pawn Start 0x80000       (1bit )
   0000 1111 0000 0000 0000 0000 0000 -> Promoted pce >> 20, 0xf  (4bits)
   0001 0000 0000 0000 0000 0000 0000 -> Castle, 0x1000000        (1bit )
-
-
-
-
-
+  
   Move has a fromSq and toSq. 
 
   Need to know: 
@@ -155,6 +172,68 @@ SUMMARY: The moveListStart array is used to index the moveList. The
       GameBoard.moveList[GameBoard.moveListStart[2]] = move; 
       GameBoard.moveListStart[2]++
     }
+
+-----------------------------------------------------------------------
+
+TOPIC: Clear Piece 
+
+  looping through the GameBoard.pieceList, 
+
+  say sq = s3 
+  pieceList[wP 0] = s1
+  pieceList[wP 0] = s2
+  pieceList[wP 0] = s3
+  pieceList[wP 0] = s4
+  pieceList[wP 0] = s5
+  tPieceNum = 2; 
+  swap 4 and 2; 
+
+  pieceList[wP 0] = s1
+  pieceList[wP 0] = s2
+  pieceList[wP 0] = s5
+  pieceList[wP 0] = s4
+  pieceList[wP 0] = s3
+  reduce pieceNum by 1 
+
+  pieceList[wP 0] = s1
+  pieceList[wP 0] = s2
+  pieceList[wP 0] = s5
+  pieceList[wP 0] = s4
+
+  s3 is never looked at again
+  so in this example the wP has been added to the end of the list, 
+  such that it is no longer reachable from the loop 
+
+-----------------------------------------------------------------------
+
+TOPIC: Check Pieces Function 
+
+SUMMARY: This function is purely for debugging purposes. It checks that the pieces exist
+        on the GameBoard.pieces array, where the GameBoard.pieceList says they do; that the
+        material is okay/valid, the side is okay/valid, and the positionKey is okay/valid.
+
+-----------------------------------------------------------------------
+
+TOPIC: Make Move Function 
+
+
+  fromSq, toSq 
+  need to be able to undo a move, this will be done be creating a 
+  GameBoard.history array. 
+  history. { move, key, enPas, fiftyMove, castlePerm }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
