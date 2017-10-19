@@ -57,7 +57,7 @@ function makeMove(move) {
   GameBoard.history[GameBoard.historyPly].positionKey = GameBoard.positionKey; // Generated key
 
   //En Passant Capture
-  if ( (move & mFlagEP) !== 0) {  //////////////THIS IS THE FUCKING LINE THAT FUCKED ME
+  if ( (move & mFlagEP) !== 0) {  //////////////THIS IS THE FUCKING LINE THAT FUCKED ME!!
     if (side === colors.white) {
       clearPiece(to - 10); 
     } else {
@@ -125,11 +125,73 @@ function makeMove(move) {
   hashSide(); 
 
   if (squareAttacked(GameBoard.pieceList[pieceIndex(kings[side], 0)], GameBoard.side)) {
-    //TAKE MOVE BACK ();
+    takeMove(); 
     return false;
   } 
 
   return true; 
+};
+
+function takeMove() {
+
+  GameBoard.historyPly--;
+  GameBoard.ply--;
+
+  const move = GameBoard.history[GameBoard.historyPly].move; 
+  const from = fromSquare(move); 
+  const to   = toSquare(move); 
+
+  if (GameBoard.enPassant !== squares.noSquare) {hashEP();}
+
+  hashCastle(); 
+
+  GameBoard.castlePermission = GameBoard.history[GameBoard.historyPly].castlePermission; 
+  GameBoard.enPassant = GameBoard.history[GameBoard.historyPly].enPassant; 
+  GameBoard.fiftyMove = GameBoard.history[GameBoard.historyPly].fiftyMove; 
+
+  if (GameBoard.enPassant !== squares.noSquare) {hashEP();}
+
+  hashCastle();
+
+  GameBoard.side ^= 1; 
+  hashSide(); 
+
+  //En Passant Capture 
+  if ( (move & mFlagEP) !== 0) {
+    if (GameBoard.side === colors.white) {
+      addPiece(pieces.bP, to-10); 
+    } else {
+      addPiece(pieces.wP, to+10);
+    }
+  //Move Rook back in the case of a Castle Move
+  } else if ( (move & mFlagCas) !== 0 ) {
+    switch (to) {
+      case squares.c1 : movePiece(squares.d1, squares.a1); break;
+      case squares.c8 : movePiece(squares.d8, squares.a8); break;
+      case squares.g1 : movePiece(squares.f1, squares.h1); break;
+      case squares.g8 : movePiece(squares.f8, squares.h8); break;
+      default : console.log('ERROR Invalid Castle: takeMove()'); break; 
+    }
+  }
+
+  movePiece(to, from); 
+
+  const cap = captured(move); 
+  if (cap !== pieces.empty) {
+    addPiece(cap, to); 
+  }
+
+  const prom = promoted(move);
+  if (prom !== pieces.empty) {
+    clearPiece(from); 
+    addPiece( (pieceColor[prom] === colors.white ? pieces.wP : pieces.bP), from);
+  }
+
+
+
+
+
+
 };
 
 

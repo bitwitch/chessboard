@@ -2,13 +2,14 @@ $(function () {
   init(); 
   parseFen(startFen); 
   printBoard(); 
-  generateMoves(); 
-  printMoveList(); 
-  printPieceLists(); 
-  checkBoard(); 
-  makeMove(GameBoard.moveList[0]); 
-  printBoard(); 
-  checkBoard();
+  // generateMoves(); 
+  // checkBoard(); 
+  // makeMove(GameBoard.moveList[0]); 
+  // printBoard(); 
+  // checkBoard();
+  // takeMove(); 
+  // printBoard(); 
+  // checkBoard(); 
 });
 
 function init() {

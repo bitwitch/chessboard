@@ -101,11 +101,11 @@ function generateMoves() {
 
       if (GameBoard.enPassant !== squares.noSquare) {
         if (sq + 9 === GameBoard.enPassant){
-          addEnPassantMove( move(sq, sq+9, pieces.empty, pieces.empty, mFlapEP) ); // makeMove() will handle the capture, i.e. why capture is pieces.empty here
+          addEnPassantMove( move(sq, sq+9, pieces.empty, pieces.empty, mFlagEP) ); // makeMove() will handle the capture, i.e. why capture is pieces.empty here
         }
 
         if (sq + 11 === GameBoard.enPassant){
-          addEnPassantMove( move(sq, sq+11, pieces.empty, pieces.empty, mFlapEP) );
+          addEnPassantMove( move(sq, sq+11, pieces.empty, pieces.empty, mFlagEP) );
         }
       }
     }
@@ -157,11 +157,11 @@ function generateMoves() {
 
       if (GameBoard.enPassant !== squares.noSquare) {
         if (sq - 9 === GameBoard.enPassant){
-          addEnPassantMove( move(sq, sq-9, pieces.empty, pieces.empty, mFlapEP) );
+          addEnPassantMove( move(sq, sq-9, pieces.empty, pieces.empty, mFlagEP) );
         }
 
         if (sq - 11 === GameBoard.enPassant){
-          addEnPassantMove( move(sq, sq-11, pieces.empty, pieces.empty, mFlapEP) );
+          addEnPassantMove( move(sq, sq-11, pieces.empty, pieces.empty, mFlagEP) );
         }
       }
     }

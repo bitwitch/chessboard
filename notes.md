@@ -222,7 +222,12 @@ TOPIC: Make Move Function
   GameBoard.history array. 
   history. { move, key, enPas, fiftyMove, castlePerm }
 
+-----------------------------------------------------------------------
 
+TOPIC: Argument Convention 
+
+  REMEMBER!!! You have chosen the convention (piece, sq) as the order of arguments 
+              in all functions that take a piece and square 
 
 
 

@@ -2,6 +2,7 @@ $('#setFen').click(function() {
   const fenString = $('#fenIn').val(); 
   parseFen(fenString); 
   printBoard();
+  perftTest(5); 
 });
 
 
